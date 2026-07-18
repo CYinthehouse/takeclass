@@ -22,7 +22,7 @@
     margin:0; color:var(--ink);
     font-family:'Noto Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     display:flex; flex-direction:column; align-items:center;
-    padding:22px 16px calc(22px + env(safe-area-inset-bottom));
+    padding:26px 16px calc(20px + env(safe-area-inset-bottom));
     background:linear-gradient(170deg,#fdf7f8 0%,#eaf3fb 48%,#dceaf8 100%);
     background-attachment:fixed;
     position:relative; overflow-x:hidden;
@@ -43,29 +43,14 @@
     -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.55),transparent 70%);
             mask-image:linear-gradient(180deg,rgba(0,0,0,.55),transparent 70%);
   }
-  .head{position:relative;z-index:1;display:flex;align-items:center;gap:11px;margin-bottom:16px;width:100%;max-width:440px}
-  .logo{width:40px;height:40px;border-radius:12px;background:var(--gold);padding:6px;flex:0 0 auto;
-        box-shadow:0 6px 18px rgba(13,20,36,.16)}
-  .logo img{width:100%;height:100%;object-fit:contain;display:block}
-  .t{font-family:'Press Start 2P',monospace;font-size:12px;line-height:1.4;letter-spacing:.3px}
-  .s{font-size:12.5px;color:var(--dim);margin-top:5px}
   #kl-chat{position:relative;z-index:1;width:100%;max-width:440px;flex:1;min-height:0;display:flex}
   #kl-chat > div{width:100%}
   .foot{position:relative;z-index:1;margin-top:14px;font-size:12px;color:var(--dim);text-align:center;max-width:440px;line-height:1.9}
   .foot a{color:#2b7fb0;text-decoration:none;font-weight:600}
   .foot a:hover{text-decoration:underline}
-  @media(max-height:700px){ .head{margin-bottom:10px} .s{display:none} }
 </style>
 </head>
 <body>
-  <div class="head">
-    <div class="logo"><img src="https://cdn.shopify.com/s/files/1/0674/6747/7282/files/Justice-Gravity-Fitness-Calvin-Yim-Small-Logo_8fedf609-414a-4000-add7-f053853a786d.png?v=1674063987" alt="KoreanLearnin"></div>
-    <div>
-      <div class="t">KoreanLearnin</div>
-      <div class="s">Korean classes &amp; enrollment</div>
-    </div>
-  </div>
-
   <div id="kl-chat" data-kl-fill></div>
 
   <div class="foot">Prefer to text? <a href="sms:+18626844886">(862) 684-4886</a><br><a href="https://koreanlearnin.com" target="_blank" rel="noopener">koreanlearnin.com</a></div>
@@ -134,7 +119,6 @@
     // prescheduled_slots server-side (admin) and returns only safe availability data
     // (no student info). Deploy it once, steps are in getOpenSlots/index.js.
     slotsUrl: "https://us-central1-korean-ta-evaluator.cloudfunctions.net/getOpenSlots",
-    waitlistUrl: "https://koreanlearnin.com/pages/waitlist",   // PLACEHOLDER, set your real waitlist URL
     smsNumber: "(862) 684-4886",
     smsHref: "sms:+18626844886",
     // "What you'll learn" pamphlets, shown right after they pick a level
@@ -216,7 +200,7 @@
       "• [[TEXTUS]], a button to text us at " + CFG.smsNumber + ". Use it whenever they want to reach a person, have a question you can't answer, or ask about other/future class times. Never type the number yourself, the widget draws the button.",
       "• [[CONFIRMLEVEL course=\"X\"]], Yes/No buttons after you show the what-you'll-learn pamphlet for that level.",
       "• [[CONFIRMTIME course=\"X\"]], Yes/No buttons after you lay out their 6-week schedule.",
-      "• [[OPENINGS course=\"absoluteBeginner\"]] or [[OPENINGS course=\"novice\"]], use ONLY after their level is known: shows a TAPPABLE picker of the open class times for THAT level (each card shows day/time, seats, teacher, with NO class-type label). When the user taps a time you confirm it and move to payment. If that level is full it shows the waitlist. The widget fills in the real seats/times, you NEVER state them yourself.",
+      "• [[OPENINGS course=\"absoluteBeginner\"]] or [[OPENINGS course=\"novice\"]], use ONLY after their level is known: shows a TAPPABLE picker of the open class times for THAT level (each card shows day/time, seats, teacher, with NO class-type label). When the user taps a time you confirm it and move to payment. If that level has nothing open the widget says so and offers our text line. We do NOT have a waitlist, never offer or mention one. The widget fills in the real seats/times, you NEVER state them yourself.",
       "• [[END]], end the chat (only per the scope rule above).",
       "",
       "THE TWO COURSES (a student's 'level'):",
@@ -256,11 +240,11 @@
       "PICKING A TIME: when the user taps an open class time (their message reads like \"I'll take the ... class for ...\"), reply confirming that exact time, add the one-line textbook note for their level, then put [[PAYMENT course=\"<their level>\"]].",
       "",
       "PAYMENT STEP (after [[PAYMENT course=\"X\"]]):",
-      "• If they ask for payment-plan details → say EXACTLY: \"" + c.paymentPlan + "\" then, in the SAME message, EXACTLY: \"" + c.textbookPitch + "\" then put [[PAY course=\"X\"]] so they go straight to the checkout buttons. Do NOT re-offer 'Payment plan details'.",
-      "• If they're ready to pay (or ask for the purchase / checkout link) → output the tag [[PAY course=\"X\"]] on its OWN line and nothing resembling buttons or links in your text. NEVER type 'I'm ready to pay', 'Payment plan details', 'here are your options', or any URL as plain text. The widget draws the real Pay-in-full and Payment-plan buttons ONLY from the [[PAY]] tag, so if you forget the tag the user gets no links. Never collect names, emails, or payment in chat.",
+      "• If they need a payment plan → say EXACTLY: \"" + c.paymentPlan + "\" then, in the SAME message, EXACTLY: \"" + c.textbookPitch + "\" then put [[PLANS course=\"X\"]], which draws a button for each plan. Do NOT re-offer 'I need a payment plan'.",
+      "• If they're ready to pay (or ask for the purchase / checkout link) → output the tag [[PAY course=\"X\"]] on its OWN line and nothing resembling buttons or links in your text. NEVER type button labels or any URL as plain text. The widget draws the real checkout buttons ONLY from the tag, so if you forget it the user gets no links. Never collect names, emails, or payment in chat.",
       "",
       "PRICING RULE, for ANY 'how much / cost / price' question:",
-      "• If you DON'T know their level → say EXACTLY \"To give you the right price, I need to know your level first!\" then put [[QUIZ]]. When they then pick their goal from THAT quiz, don't stop at just naming the level, give the whole picture in one reply: name their level and briefly describe it (Absolute Beginner: we teach you to speak with a Korean mouth, fix up your pronunciation, and learn basic survival phrases; Novice: you learn to build your own sentences from scratch with a deeper focus on grammar), tell them the price (" + c.price + "), tell them the class format (" + JSON.stringify(c.format) + "), then put [[OPENINGS course=\"<their level>\"]] so they can tap the open time they want (or see the waitlist if that level is full). Do NOT list the seats/times or payment-plan details yourself.",
+      "• If you DON'T know their level → say EXACTLY \"To give you the right price, I need to know your level first!\" then put [[QUIZ]]. When they then pick their goal from THAT quiz, don't stop at just naming the level, give the whole picture in one reply: name their level and briefly describe it (Absolute Beginner: we teach you to speak with a Korean mouth, fix up your pronunciation, and learn basic survival phrases; Novice: you learn to build your own sentences from scratch with a deeper focus on grammar), tell them the price (" + c.price + "), tell them the class format (" + JSON.stringify(c.format) + "), then put [[OPENINGS course=\"<their level>\"]] so they can tap the open time they want (or hear that nothing is open for that level right now). Do NOT list the seats/times or payment-plan details yourself.",
       "• If you DO know their level → tell them it's " + c.price + ", then put [[INFO]].",
       "",
       "If the user says 'main menu', 'back', or similar → put [[MENU]].",
@@ -720,8 +704,8 @@
   }
   function renderPayment(course) {
     renderChips([
-      { label: "💳 I'm ready to pay",       send: "I'm ready to pay now for " + course + "." },
-      { label: "📋 Payment plan details",   send: "What are the payment plan details for " + course + "?", alt: true }
+      { label: "💳 I'm ready to pay (Pay in full upfront)", send: "I'm ready to pay now for " + course + "." },
+      { label: "📋 I need a payment plan",   send: "What are the payment plan details for " + course + "?", alt: true }
     ]);
   }
   function renderPlans(course) {
@@ -784,12 +768,11 @@
       ? "Quick note: for Novice, the $35 textbook is required to proceed."
       : "Quick note: for Absolute Beginner, the $35 textbook is optional.";
   }
-  function renderWaitlist(label) {
+  function renderNoneOpen(label) {
     var who = label ? label + " classes" : "classes";
-    bubble("bot", "Ah, all our " + who + " are full right now \ud83d\ude23 " + CFG.content.newClasses + " In the meantime, hop on the waitlist and we'll message you the moment a seat opens up:");
+    bubble("bot", "Ah, all our " + who + " are full right now \ud83d\ude23 " + CFG.content.newClasses + "\n\n" + CFG.content.textUs);
     var wrap = document.createElement("div"); wrap.className = "slots";
-    wrap.appendChild(ctaLink("\u270d\ufe0f Join the waitlist", CFG.waitlistUrl || "#", false));
-    wrap.appendChild(ctaLink("\ud83d\udcac Text " + CFG.smsNumber, CFG.smsHref || "#", true));
+    wrap.appendChild(ctaLink("\ud83d\udcac Text " + CFG.smsNumber, CFG.smsHref || "#", false));
     els.log.appendChild(wrap);
     renderChips([{ label: "\u2b05\ufe0f Back to main menu", send: "Main menu" }]);
   }
@@ -954,7 +937,7 @@
           return lvO === "novice" ? /novice/i.test(pr) : /absolute/i.test(pr);
         });
         if (availO.length) steps.push(function () { renderSlotsPick(availO, lvO); });
-        else               steps.push(function () { renderWaitlist(labelO); });
+        else               steps.push(function () { renderNoneOpen(labelO); });
       }
       if (levelPick)    steps.push(renderLevelPick);
       if (textUs)       steps.push(renderTextUs);
